@@ -1,35 +1,79 @@
 const user = require('../Model/userModel');
+const bcrypt = require('bcrypt');
 
 exports.addUser = (req, res) => {
 
-        const userDetail = new user({
-            name: req.body.name,
-            email: req.body.email,
-            password: req.body.password,
-        })
+    const userDetail = new user({
+        name: req.body.userName,
+        email: req.body.email,
+        city: req.body.city,
+        password: bcrypt.hashSync(req.body.password,8),
+    })
 
-        userDetail.save((err, userData) => {
-            if (err) {
-                res.status(500).json({ message: err.message })
-            } 
-            else {
-                res.status(200).json({ message: userData })
-            }
-        })
+    userDetail.save((err, userData) => {
+        if (err) {
+            res.status(500).json({ message: err.message })
+        }
+        else {
+            res.status(200).json({ message: "user added successfully" })
+        }
+    })
 }
 
-// exports.getUser = (req, res) => {
-//     user.find({}, function (err, userData) {
+
+function isValidPassword(user, password) {
+    return bcrypt.compareSync(password, user.password);
+}
+
+// exports.findUser = (req, res) => {
+//     user.find({ email: req.body.email }, function (err, user) {
+//         if (!user) {
+//             res.status(400).json({ message: 'User not found' })
+//         }
+//         if (!isValidPassword(user, req.body.password)) {
+//             return res.status(401).json({message: 'Invalid password' })
+//         }
 //         if (err) {
-//             res.status(500).json({ message: err })
+//             res.status(500).json({ message: err.message })
 //         }
-//         else {
-//             res.status(200).json({ message: activityData })
-//         }
+//         res.status(200)
+//             .json({user: {
+//                     id: user.id,
+//                     username: user.name,
+//                     city: user.city
+//                 },
+//                 message: 'Login successful'
+//             })
 //     })
 // }
 
-// exports.getOneActivity = (req, res) => {
+
+exports.findUser = (req, res) => {
+    user.findOne({ email: req.body.email })
+        .exec((err, user) => {
+        
+            if (!user) {
+            return res.status(400).json({message:'User not found'})
+            }
+            
+            if (!isValidPassword(user, req.body.password)) {
+                return res.status(401).json({message:'Invalid password'})
+            }
+
+            
+            res.status(200)
+                .json({
+                    user: {
+                        
+                        name: user.name,
+                        city: user.city
+                    },
+                    message: 'Login successful'
+                })
+
+    })
+}
+// exports.getOneUser = (req, res) => {
 //     const getid = req.params.id
 //     activities.findOne({ _id: getid }, 
 //         function (err, activityData) {
