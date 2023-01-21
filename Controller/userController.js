@@ -51,26 +51,20 @@ function isValidPassword(user, password) {
 exports.findUser = (req, res) => {
     user.findOne({ email: req.body.email })
         .exec((err, user) => {
-        
             if (!user) {
             return res.status(400).json({message:'User not found'})
             }
-            
             if (!isValidPassword(user, req.body.password)) {
                 return res.status(401).json({message:'Invalid password'})
             }
-
+            
+            const token = jwt.sign({ _id: user._id,email:user.email }, process.env.API_SECRET, { expiresIn: 9999 })
             
             res.status(200)
                 .json({
-                    user: {
-                        
-                        name: user.name,
-                        city: user.city
-                    },
-                    message: 'Login successful'
+                   userID: user._id,
+                   accessToken:token
                 })
-
     })
 }
 // exports.getOneUser = (req, res) => {
