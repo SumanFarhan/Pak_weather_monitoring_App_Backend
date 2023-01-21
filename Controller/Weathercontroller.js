@@ -1,9 +1,6 @@
 const weather = require('../Model/weatherModel');
-<<<<<<< Updated upstream
 const weatherAPI = require('../Model/weatherAPIModel');
-=======
 const API_KEY = "c21d24bee643583f8fedd5a633a2db0a"
->>>>>>> Stashed changes
 const axios = require('axios');
 var {ObjectId} = require('mongodb');
 
@@ -25,12 +22,7 @@ exports.addweather = (req, res) => {
     })
 }
 
-<<<<<<< Updated upstream
-exports.getWeather = async (req, res) => {
-=======
-exports.getWeather = (req, res) => {
->>>>>>> Stashed changes
-    const API_KEY = "c21d24bee643583f8fedd5a633a2db0a"
+exports.getWeather = async(req, res) => {
     const city = req.query.city;
     const apiKey = API_KEY;
     const units = req.query.units || 'metric';
@@ -85,51 +77,6 @@ exports.getWeather = (req, res) => {
         });
 }
 
-<<<<<<< Updated upstream
-    // await axios.get(url)
-    //     .then(response => {
-    //         res.json(
-    //             {Data:{
-    //                 country: data.sys.country,
-    //                 city_name: data.name,
-    //                 weather_Desciption: data.weather[0].description,
-    //                 temperature: data.main.temp,
-    //                 feels_like: data.main.feels_like,
-    //                 pressure: data.main.pressure,
-    //                 humidity: data.main.humidity,
-    //                 wind_Speed: data.wind.speed,
-    //                 sunrise: data.sys.sunrise,
-    //                 sunset: data.sys.sunset,
-    //             }})
-
-
-            // const weatherAPIDetail = new weatherAPI({
-            //     country: res.country,
-            //     city_name: res.city_name,
-            //     weather_Desciption: res.weather_Desciption,
-            //     feels_like: res.weather_Desciption,
-            //     temperature: res.temperature,
-            //     pressure: res.pressure,
-            //     humidity: res.humidity,
-            //     wind_Speed: res.wind_Speed,
-            //     sunrise: res.sunrise,
-            //     sunset: res.sunset
-            // })
-
-
-
-            // weatherAPIDetail.save(weatherAPIDetail)
-                // if (err) {
-                //     res.status(500).json({ message: err.message })
-                // }
-                // else {
-                //     res.status(200).json({ message: weatherData })
-                // }
-
-
-
-
-=======
 
 exports.getFiveCities = (req, res) => {
     const cities = ['Karachi', 'Lahore', 'Islamabad', 'Peshawar', 'Quetta']
@@ -202,15 +149,6 @@ exports.getFiveCities = (req, res) => {
                             sunset: weatherData[4].sys.sunset
                         }
                     ]);
-                    // city_name:weatherData.name
-                    // weather_Desciption:response.data.weather[0].description,
-                    // temperature:response.data.main.temp,
-                    // feels_like:response.data.main.feels_like,
-                    // pressure:response.data.main.pressure,
-                    // humidity:response.data.main.humidity,
-                    // wind_Speed:response.data.wind.speed,
-                    // sunrise:response.data.sys.sunrise,
-                    // sunset:response.data.sys.sunset,
                 }
             })
             .catch(error => {
@@ -219,7 +157,6 @@ exports.getFiveCities = (req, res) => {
             });
     }
 }
->>>>>>> Stashed changes
 
 // exports.getOneCityWeather = (req, res) => {
 //     const getid = req.params.id
