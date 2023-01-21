@@ -11,6 +11,10 @@ var weatherSchema=new Schema(
             type: String, 
             enum: ['F', 'C'], 
             required: [true, 'Select one temperature unit']
+        },
+        userID: {
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"users"
         }
     }
 )
