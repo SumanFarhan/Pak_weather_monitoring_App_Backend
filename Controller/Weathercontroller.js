@@ -1,12 +1,15 @@
 const weather = require('../Model/weatherModel');
 const weatherAPI = require('../Model/weatherAPIModel');
 const axios = require('axios');
+var {ObjectId} = require('mongodb');
 
 exports.addweather = (req, res) => {
     const weatherDetail = new weather({
         cityName: req.body.cityName,
-        temperatureUnit: req.body.temperatureUnit
+        temperatureUnit: req.body.temperatureUnit,
+        userID: req.body._id
     })
+    console.log(req.body._id,ObjectId(req.body._id))
 
     weatherDetail.save((err, weatherData) => {
         if (err) {
@@ -63,7 +66,7 @@ exports.getWeather = async (req, res) => {
                     console.log(`Data Saved : ${savedData}`)
                 })
                 .catch(error => {
-                    console.log('erroor', error)
+                    console.log('error', error)
                 })
                 res.json(obj)
         })
