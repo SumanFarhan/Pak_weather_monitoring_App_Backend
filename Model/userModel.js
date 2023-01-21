@@ -21,6 +21,10 @@ var userSchema = new Schema(
                 message: '{VALUE} is not a valid email address'
             }
         },
+        city: {
+            type: String,
+            required: [true, 'City is required']
+        },
         password: {
             type: String,
             required: [true, 'Please provide a password']
