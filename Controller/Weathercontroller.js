@@ -1,5 +1,9 @@
 const weather = require('../Model/weatherModel');
+<<<<<<< Updated upstream
 const weatherAPI = require('../Model/weatherAPIModel');
+=======
+const API_KEY = "c21d24bee643583f8fedd5a633a2db0a"
+>>>>>>> Stashed changes
 const axios = require('axios');
 
 exports.addweather = (req, res) => {
@@ -18,7 +22,11 @@ exports.addweather = (req, res) => {
     })
 }
 
+<<<<<<< Updated upstream
 exports.getWeather = async (req, res) => {
+=======
+exports.getWeather = (req, res) => {
+>>>>>>> Stashed changes
     const API_KEY = "c21d24bee643583f8fedd5a633a2db0a"
     const city = req.query.city;
     const apiKey = API_KEY;
@@ -74,6 +82,7 @@ exports.getWeather = async (req, res) => {
         });
 }
 
+<<<<<<< Updated upstream
     // await axios.get(url)
     //     .then(response => {
     //         res.json(
@@ -117,10 +126,102 @@ exports.getWeather = async (req, res) => {
 
 
 
+=======
+
+exports.getFiveCities = (req, res) => {
+    const cities = ['Karachi', 'Lahore', 'Islamabad', 'Peshawar', 'Quetta']
+    const apiKey = API_KEY;
+    const units = 'celsius';
+    const weatherData = [];
+
+    for (let i = 0; i < cities.length; i++) {
+        const city = cities[i];
+        const url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&units=${units}&APPID=${apiKey}`;
+
+        axios.get(url)
+            .then(response => {
+                weatherData.push(response.data);
+                if (weatherData.length === cities.length) {
+                    res.json([
+                        Firstcity={
+                            city_name:weatherData[0].name,
+                            weather_Desciption: weatherData[0].weather[0].description,
+                            temperature: weatherData[0].main.temp,
+                            feels_like: weatherData[0].main.feels_like,
+                            pressure: weatherData[0].main.pressure,
+                            humidity: weatherData[0].main.humidity,
+                            wind_Speed: weatherData[0].wind.speed,
+                            sunrise: weatherData[0].sys.sunrise,
+                            sunset: weatherData[0].sys.sunset
+                        },
+                        Secondcity={
+                            city_name:weatherData[1].name,
+                            weather_Desciption: weatherData[1].weather[0].description,
+                            temperature: weatherData[1].main.temp,
+                            feels_like: weatherData[1].main.feels_like,
+                            pressure: weatherData[1].main.pressure,
+                            humidity: weatherData[1].main.humidity,
+                            wind_Speed: weatherData[1].wind.speed,
+                            sunrise: weatherData[1].sys.sunrise,
+                            sunset: weatherData[1].sys.sunset
+                        },
+                        Thirdcity={
+                            city_name:weatherData[2].name,
+                            weather_Desciption: weatherData[2].weather[0].description,
+                            temperature: weatherData[2].main.temp,
+                            feels_like: weatherData[2].main.feels_like,
+                            pressure: weatherData[2].main.pressure,
+                            humidity: weatherData[2].main.humidity,
+                            wind_Speed: weatherData[2].wind.speed,
+                            sunrise: weatherData[2].sys.sunrise,
+                            sunset: weatherData[2].sys.sunset
+                        },
+                        Fourthcity={
+                            city_name:weatherData[3].name,
+                            weather_Desciption: weatherData[3].weather[0].description,
+                            temperature: weatherData[3].main.temp,
+                            feels_like: weatherData[3].main.feels_like,
+                            pressure: weatherData[3].main.pressure,
+                            humidity: weatherData[3].main.humidity,
+                            wind_Speed: weatherData[3].wind.speed,
+                            sunrise: weatherData[3].sys.sunrise,
+                            sunset: weatherData[3].sys.sunset
+                        },
+                        Fifthcity={
+                            city_name:weatherData[4].name,
+                            weather_Desciption: weatherData[4].weather[0].description,
+                            temperature: weatherData[4].main.temp,
+                            feels_like: weatherData[4].main.feels_like,
+                            pressure: weatherData[4].main.pressure,
+                            humidity: weatherData[4].main.humidity,
+                            wind_Speed: weatherData[4].wind.speed,
+                            sunrise: weatherData[4].sys.sunrise,
+                            sunset: weatherData[4].sys.sunset
+                        }
+                    ]);
+                    // city_name:weatherData.name
+                    // weather_Desciption:response.data.weather[0].description,
+                    // temperature:response.data.main.temp,
+                    // feels_like:response.data.main.feels_like,
+                    // pressure:response.data.main.pressure,
+                    // humidity:response.data.main.humidity,
+                    // wind_Speed:response.data.wind.speed,
+                    // sunrise:response.data.sys.sunrise,
+                    // sunset:response.data.sys.sunset,
+                }
+            })
+            .catch(error => {
+                console.log(error);
+                res.status(500).json({ message: 'Error getting weather data' });
+            });
+    }
+}
+>>>>>>> Stashed changes
 
 // exports.getOneCityWeather = (req, res) => {
 //     const getid = req.params.id
-//     activities.findOne({ _id: getid }, 
+
+//     activities.findOne({ _id: getid },
 //         function (err, activityData) {
 //         if (err) {
 //             res.status(500).json({ message: err })
@@ -144,7 +245,7 @@ exports.getWeather = async (req, res) => {
 
 // exports.getOneActivity = (req, res) => {
 //     const getid = req.params.id
-//     activities.findOne({ _id: getid }, 
+//     activities.findOne({ _id: getid },
 //         function (err, activityData) {
 //         if (err) {
 //             res.status(500).json({ message: err })
