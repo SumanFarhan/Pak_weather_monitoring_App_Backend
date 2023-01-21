@@ -1,4 +1,5 @@
 const weather = require('../Model/weatherModel');
+const axios = require('axios');
 
 exports.addweather = (req, res) => {
         const weatherDetail = new weather({
@@ -15,6 +16,35 @@ exports.addweather = (req, res) => {
             }
         })
 }
+
+exports.getWeather=(req, res) => {
+    const city = req.query.city;
+    const apiKey = API_KEY;
+    const units = req.query.units || 'metric';
+    const url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&units=${units}&APPID=${apiKey}`;
+
+    axios.get(url)
+        .then(response => {
+            res.json(response.data);
+        })
+        .catch(error => {
+            console.log(error);
+            res.status(500).json({ message: 'Error getting weather data' });
+        });
+}
+
+// exports.getOneCityWeather = (req, res) => {
+//     const getid = req.params.id
+//     activities.findOne({ _id: getid }, 
+//         function (err, activityData) {
+//         if (err) {
+//             res.status(500).json({ message: err })
+//         }
+//         else {
+//             res.status(200).json({ message: activityData })
+//         }
+//     })
+// }
 
 // exports.getUser = (req, res) => {
 //     user.find({}, function (err, userData) {
