@@ -81,7 +81,7 @@ exports.getWeather = async(req, res) => {
 exports.getFiveCities = (req, res) => {
     const cities = ['Karachi', 'Lahore', 'Islamabad', 'Peshawar', 'Quetta']
     const apiKey = API_KEY;
-    const units = 'celsius';
+    const units = 'metric';
     const weatherData = [];
 
     for (let i = 0; i < cities.length; i++) {
