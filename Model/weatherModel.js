@@ -19,5 +19,4 @@ var weatherSchema=new Schema(
     }
 )
 
-
 module.exports=mongoose.model('Weather',weatherSchema)

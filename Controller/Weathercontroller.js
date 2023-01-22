@@ -2,35 +2,78 @@ const weather = require('../Model/weatherModel');
 const weatherAPI = require('../Model/weatherAPIModel');
 const API_KEY = "c21d24bee643583f8fedd5a633a2db0a"
 const axios = require('axios');
-const querystring = require('querystring');
+const user = require('../Model/userModel');
 
 exports.addweather = async (req, res) => {
-    const weatherDetail = new weather({
-        cityName: req.body.cityName,
-        temperatureUnit: req.body.temperatureUnit,
-        userID: req.body._id
-    })
 
-    const obj = {
-        city: req.body.cityName,
-        units: req.body.temperatureUnit
+    try {
+        const result = await user.findByIdAndUpdate({ _id: req.body._id },
+            {
+                $push: {
+                    multiplecities: req.body.cities
+                }
+
+            },
+            {
+                new: true
+            }
+
+        )
+        console.log(result)
+        // res.status(200).json({ message: result })
     }
-    
-    const resp = await this.getWeather(obj);
+    catch (error) {
+        console.log(error)
+    }
 
-     weatherDetail.save((err, weatherData) => {
-        if (err) {
-            res.status(500).json({ message: err.message })
-        }
-        else {
-            res.status(200).json({ message: weatherData, data: resp })
-            
-        }
-    })
+    weatherAPI.findOne({ cityname: req.body.cities })
+        .exec ((err, user) => {
+            // function (err, activityData) {
+            if (err) {
+                console.log('same city has been called')
+                console.log(err)
+            }
+            else {
+                const obj = {
+                    city: req.body.cityName,
+                    units: req.body.temperatureUnit
+                }
+                const resp = await this.getWeather(obj)
+                    .then(
+                        res.status(200).json({  data: resp })
+                    ).then(
+                        console.log(resp)
+                    )
+
+
+            }
+        })
+
+
+
+
+
+
+
+
+
+
+    // weatherDetail.save((err, weatherData) => {
+    //     if (err) {
+    //         res.status(500).json({ message: err.message })
+    //     }
+    //     else {
+    //         res.status(200).json({ message: weatherData, data: resp })
+
+    //     }
+
+
+
 
 }
 
-exports.getWeather = async(req, res) => {
+
+exports.getWeather = async (req, res) => {
     const city = req.city
     const apiKey = API_KEY;
     const units = req.units || 'metric';
@@ -40,53 +83,51 @@ exports.getWeather = async(req, res) => {
     await axios.get(url)
         .then(
             async response => {
-            console.log(response);
 
-            const data = response.data
-            obj = {
-                country: data.sys.country,
-                city_name: data.name,
-                weather_Desciption: data.weather[0].description,
-                temperature: data.main.temp,
-                feels_like: data.main.feels_like,
-                pressure: data.main.pressure,
-                humidity: data.main.humidity,
-                wind_Speed: data.wind.speed,
-                sunrise: data.sys.sunrise,
-                sunset: data.sys.sunset,
-            }
+                const data = response.data
+                obj = {
+                    country: data.sys.country,
+                    city_name: data.name,
+                    weather_Desciption: data.weather[0].description,
+                    temperature: data.main.temp,
+                    feels_like: data.main.feels_like,
+                    pressure: data.main.pressure,
+                    humidity: data.main.humidity,
+                    wind_Speed: data.wind.speed,
+                    sunrise: data.sys.sunrise,
+                    sunset: data.sys.sunset,
+                }
 
 
-            const weatherAPIDetail = new weatherAPI({
-                country: obj.country,
-                cityname: obj.city_name,
-                weather_Desciption: obj.weather_Desciption,
-                temperature: obj.temperature,
-                feels_like: obj.feels_like,
-                pressure: obj.pressure,
-                humidity: obj.humidity,
-                wind_Speed: obj.wind_Speed,
-                sunrise: obj.sunrise,
-                sunset: obj.sunset
-            }
-            );
-          await  weatherAPIDetail.save()
-                .then(savedData => {
-                    console.log(`Data Saved : ${savedData}`)
-                })
-                .catch(error => {
-                    console.log('error', error)
-                })
-                console.log(obj,'obj form res 200')
-            return(obj)
-        })
+                const weatherAPIDetail = new weatherAPI({
+                    country: obj.country,
+                    cityname: obj.city_name,
+                    weather_Desciption: obj.weather_Desciption,
+                    temperature: obj.temperature,
+                    feels_like: obj.feels_like,
+                    pressure: obj.pressure,
+                    humidity: obj.humidity,
+                    wind_Speed: obj.wind_Speed,
+                    sunrise: obj.sunrise,
+                    sunset: obj.sunset
+                }
+                );
+                await weatherAPIDetail.save()
+                    .then(savedData => {
+                        console.log(`Data Saved : ${savedData}`)
+                    })
+                    .catch(error => {
+                        console.log('error', error)
+                    })
+                return (obj)
+            })
 
         .catch(error => {
             console.log(error);
             res.status(500).json({ message: 'Error getting weather data' });
         });
 
-        return(obj)
+    return (obj)
 }
 
 
@@ -105,8 +146,8 @@ exports.getFiveCities = (req, res) => {
                 weatherData.push(response.data);
                 if (weatherData.length === cities.length) {
                     res.json([
-                        Firstcity={
-                            city_name:weatherData[0].name,
+                        Firstcity = {
+                            city_name: weatherData[0].name,
                             weather_Desciption: weatherData[0].weather[0].description,
                             temperature: weatherData[0].main.temp,
                             feels_like: weatherData[0].main.feels_like,
@@ -116,8 +157,8 @@ exports.getFiveCities = (req, res) => {
                             sunrise: weatherData[0].sys.sunrise,
                             sunset: weatherData[0].sys.sunset
                         },
-                        Secondcity={
-                            city_name:weatherData[1].name,
+                        Secondcity = {
+                            city_name: weatherData[1].name,
                             weather_Desciption: weatherData[1].weather[0].description,
                             temperature: weatherData[1].main.temp,
                             feels_like: weatherData[1].main.feels_like,
@@ -127,8 +168,8 @@ exports.getFiveCities = (req, res) => {
                             sunrise: weatherData[1].sys.sunrise,
                             sunset: weatherData[1].sys.sunset
                         },
-                        Thirdcity={
-                            city_name:weatherData[2].name,
+                        Thirdcity = {
+                            city_name: weatherData[2].name,
                             weather_Desciption: weatherData[2].weather[0].description,
                             temperature: weatherData[2].main.temp,
                             feels_like: weatherData[2].main.feels_like,
@@ -138,8 +179,8 @@ exports.getFiveCities = (req, res) => {
                             sunrise: weatherData[2].sys.sunrise,
                             sunset: weatherData[2].sys.sunset
                         },
-                        Fourthcity={
-                            city_name:weatherData[3].name,
+                        Fourthcity = {
+                            city_name: weatherData[3].name,
                             weather_Desciption: weatherData[3].weather[0].description,
                             temperature: weatherData[3].main.temp,
                             feels_like: weatherData[3].main.feels_like,
@@ -149,8 +190,8 @@ exports.getFiveCities = (req, res) => {
                             sunrise: weatherData[3].sys.sunrise,
                             sunset: weatherData[3].sys.sunset
                         },
-                        Fifthcity={
-                            city_name:weatherData[4].name,
+                        Fifthcity = {
+                            city_name: weatherData[4].name,
                             weather_Desciption: weatherData[4].weather[0].description,
                             temperature: weatherData[4].main.temp,
                             feels_like: weatherData[4].main.feels_like,

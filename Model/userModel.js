@@ -21,9 +21,9 @@ var userSchema = new Schema(
                 message: '{VALUE} is not a valid email address'
             }
         },
-        city: {
-            type: String,
-            required: [true, 'City is required']
+        multiplecities:{
+            type: Array,
+            required:[true,'Please provide a city name']
         },
         password: {
             type: String,
