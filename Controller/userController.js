@@ -58,12 +58,13 @@ exports.findUser = (req, res) => {
                 return res.status(401).json({message:'Invalid password'})
             }
             
-            const token = jwt.sign({ _id: user._id,email:user.email }, process.env.API_SECRET, { expiresIn: 9999 })
+            // const token = jwt.sign({ _id: user._id,email:user.email }, process.env.API_SECRET, { expiresIn: 9999 })
             
             res.status(200)
                 .json({
-                   userID: user._id,
-                   accessToken:token
+                   userID:{
+                    _id: user._id
+                   } 
                 })
     })
 }

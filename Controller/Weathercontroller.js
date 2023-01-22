@@ -2,7 +2,6 @@ const weather = require('../Model/weatherModel');
 const weatherAPI = require('../Model/weatherAPIModel');
 const API_KEY = "c21d24bee643583f8fedd5a633a2db0a"
 const axios = require('axios');
-var {ObjectId} = require('mongodb');
 
 exports.addweather = (req, res) => {
     const weatherDetail = new weather({
@@ -10,7 +9,7 @@ exports.addweather = (req, res) => {
         temperatureUnit: req.body.temperatureUnit,
         userID: req.body._id
     })
-    console.log(req.body._id,ObjectId(req.body._id))
+    console.log('weather detail here',weatherDetail)
 
     weatherDetail.save((err, weatherData) => {
         if (err) {
@@ -20,6 +19,7 @@ exports.addweather = (req, res) => {
             res.status(200).json({ message: weatherData })
         }
     })
+    
 }
 
 exports.getWeather = async(req, res) => {
