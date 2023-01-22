@@ -1,9 +1,6 @@
 const routes = require('express').Router();
 const userController = require('../Controller/userController');
 const weatherController=require('../Controller/Weathercontroller')
-const { authenticate } = require('../Controller/jwtController');
-
-
 
 
 routes.post('/signupUser', userController.addUser);
@@ -13,5 +10,4 @@ routes.get('/weather',weatherController.getWeather)
 routes.get('/getFiveCities',weatherController.getFiveCities)
 
 
-module.exports = routes;
 module.exports = routes;

@@ -1,4 +1,5 @@
 const express = require('express');
+const axios = require('axios');
 const app = express();
 const routes = require('./router/router')
 const mongoose = require('mongoose');
@@ -36,17 +37,30 @@ const io = new Server(server,{
 });
 
 
+// io.on('connection', (socket) => {
+//     console.log(`A user connected:${socket.id}`)
+//     socket.on('weather-data', (data) => {
+//       io.emit('weather-data', data);
+//       console.log('weather data by socket emit')
+//     });
+//     socket.on('disconnect', () => {
+//       console.log('user disconnected');
+//     });
+// });
+
 io.on('connection', (socket) => {
     console.log(`A user connected:${socket.id}`)
-    socket.on('weather-data', (data) => {
-      io.emit('weather-data', data);
-      console.log('weather data by socket emit')
-    });
-    socket.on('disconnect', () => {
-      console.log('user disconnected');
+    // Make an API request
+    axios.get('http://localhost:3007/getFiveCities')
+    .then((response) => {
+        // Emit the API response to the client
+        socket.emit('weather-data', response.data);
+        // console.log(response.data)
+    })
+    .catch((error) => {
+        console.log(error);
     });
 });
-
 
 server.listen(3007, () => {
     console.log('Server running on port 3007');
