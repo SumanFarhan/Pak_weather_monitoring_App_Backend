@@ -2,38 +2,48 @@ const weather = require('../Model/weatherModel');
 const weatherAPI = require('../Model/weatherAPIModel');
 const API_KEY = "c21d24bee643583f8fedd5a633a2db0a"
 const axios = require('axios');
+const querystring = require('querystring');
 
-exports.addweather = (req, res) => {
+exports.addweather = async (req, res) => {
     const weatherDetail = new weather({
         cityName: req.body.cityName,
         temperatureUnit: req.body.temperatureUnit,
         userID: req.body._id
     })
-    console.log('weather detail here',weatherDetail)
 
-    weatherDetail.save((err, weatherData) => {
+    const obj = {
+        city: req.body.cityName,
+        units: req.body.temperatureUnit
+    }
+    
+    const resp = await this.getWeather(obj);
+
+     weatherDetail.save((err, weatherData) => {
         if (err) {
             res.status(500).json({ message: err.message })
         }
         else {
-            res.status(200).json({ message: weatherData })
+            res.status(200).json({ message: weatherData, data: resp })
+            
         }
     })
-    
+
 }
 
 exports.getWeather = async(req, res) => {
-    const city = req.query.city;
+    const city = req.city
     const apiKey = API_KEY;
-    const units = req.query.units || 'metric';
+    const units = req.units || 'metric';
     const url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&units=${units}&APPID=${apiKey}`;
 
+    let obj;
     await axios.get(url)
-        .then(response => {
+        .then(
+            async response => {
             console.log(response);
 
             const data = response.data
-            const obj = {
+            obj = {
                 country: data.sys.country,
                 city_name: data.name,
                 weather_Desciption: data.weather[0].description,
@@ -46,7 +56,6 @@ exports.getWeather = async(req, res) => {
                 sunset: data.sys.sunset,
             }
 
-            console.log('data herrrrrrre', obj)
 
             const weatherAPIDetail = new weatherAPI({
                 country: obj.country,
@@ -61,20 +70,23 @@ exports.getWeather = async(req, res) => {
                 sunset: obj.sunset
             }
             );
-            weatherAPIDetail.save()
+          await  weatherAPIDetail.save()
                 .then(savedData => {
                     console.log(`Data Saved : ${savedData}`)
                 })
                 .catch(error => {
                     console.log('error', error)
                 })
-                res.json(obj)
+                console.log(obj,'obj form res 200')
+            return(obj)
         })
 
         .catch(error => {
             console.log(error);
             res.status(500).json({ message: 'Error getting weather data' });
         });
+
+        return(obj)
 }
 
 
