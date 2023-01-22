@@ -9,7 +9,7 @@ var weatherSchema=new Schema(
         },
         temperatureUnit: { 
             type: String, 
-            enum: ['F', 'C'], 
+            enum: ['imperial', 'metric'], 
             required: [true, 'Select one temperature unit']
         },
         userID: {

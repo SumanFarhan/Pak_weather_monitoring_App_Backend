@@ -50,12 +50,11 @@ const io = new Server(server,{
 
 io.on('connection', (socket) => {
     console.log(`A user connected:${socket.id}`)
-    // Make an API request
     axios.get('http://localhost:3007/getFiveCities')
     .then((response) => {
         // Emit the API response to the client
         socket.emit('weather-data', response.data);
-        // console.log(response.data)
+        console.log(response.data)
     })
     .catch((error) => {
         console.log(error);
