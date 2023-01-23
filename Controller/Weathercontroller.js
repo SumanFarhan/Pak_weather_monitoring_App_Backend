@@ -7,6 +7,8 @@ const user = require('../Model/userModel');
 exports.addweather = async (req, res) => {
 
     try {
+        console.log(req.body._id)
+        console.log(req.body)
         const result = await user.findByIdAndUpdate({ _id: req.body._id },
             {
                 $push: {
@@ -19,7 +21,7 @@ exports.addweather = async (req, res) => {
             }
 
         )
-        console.log(result)
+        // console.log(result)
         // res.status(200).json({ message: result })
     }
     catch (error) {
@@ -27,23 +29,37 @@ exports.addweather = async (req, res) => {
     }
 
     weatherAPI.findOne({ cityname: req.body.cities })
-        .exec ((err, user) => {
+        .exec((err, user) => {
             // function (err, activityData) {
             if (err) {
                 console.log('same city has been called')
                 console.log(err)
             }
             else {
+                  weatherDetail.save((err, weatherData) => {
+        if (err) {
+            res.status(500).json({ message: err.message })
+        }
+        else {
+            res.status(200).json({ message: weatherData, data: resp })
+
+    //     }
                 const obj = {
-                    city: req.body.cityName,
+                    cities: req.body.cities,
                     units: req.body.temperatureUnit
                 }
-                const resp = await this.getWeather(obj)
-                    .then(
-                        res.status(200).json({  data: resp })
-                    ).then(
-                        console.log(resp)
-                    )
+                console.log(obj)
+                this.getWeather(obj)
+                    // .then((_data) =>
+                    //     res.status(200).json({  data: _data })
+                    // )
+                    .then(savedData => {
+                        console.log('Data Saved 2 :', (JSON.stringify(savedData))
+                        )
+                    })
+                    .catch(error => {
+                        console.log('error', error)
+                    })
 
 
             }
@@ -58,14 +74,7 @@ exports.addweather = async (req, res) => {
 
 
 
-    // weatherDetail.save((err, weatherData) => {
-    //     if (err) {
-    //         res.status(500).json({ message: err.message })
-    //     }
-    //     else {
-    //         res.status(200).json({ message: weatherData, data: resp })
-
-    //     }
+  
 
 
 
@@ -74,16 +83,17 @@ exports.addweather = async (req, res) => {
 
 
 exports.getWeather = async (req, res) => {
-    const city = req.city
+    console.log(req);
+    const city = req.cities
     const apiKey = API_KEY;
     const units = req.units || 'metric';
     const url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&units=${units}&APPID=${apiKey}`;
-
+    console.log(url);
     let obj;
     await axios.get(url)
         .then(
-            async response => {
-
+            response => {
+                
                 const data = response.data
                 obj = {
                     country: data.sys.country,
@@ -99,35 +109,40 @@ exports.getWeather = async (req, res) => {
                 }
 
 
-                const weatherAPIDetail = new weatherAPI({
-                    country: obj.country,
-                    cityname: obj.city_name,
-                    weather_Desciption: obj.weather_Desciption,
-                    temperature: obj.temperature,
-                    feels_like: obj.feels_like,
-                    pressure: obj.pressure,
-                    humidity: obj.humidity,
-                    wind_Speed: obj.wind_Speed,
-                    sunrise: obj.sunrise,
-                    sunset: obj.sunset
-                }
-                );
-                await weatherAPIDetail.save()
-                    .then(savedData => {
-                        console.log(`Data Saved : ${savedData}`)
-                    })
-                    .catch(error => {
-                        console.log('error', error)
-                    })
-                return (obj)
+                // const weatherAPIDetail = new weatherAPI({
+                //     country: obj.country,
+                //     cityname: obj.city_name,
+                //     weather_Desciption: obj.weather_Desciption,
+                //     temperature: obj.temperature,
+                //     feels_like: obj.feels_like,
+                //     pressure: obj.pressure,
+                //     humidity: obj.humidity,
+                //     wind_Speed: obj.wind_Speed,
+                //     sunrise: obj.sunrise,
+                //     sunset: obj.sunset
+                // }
+                // );
+                // await weatherAPIDetail.save()
+                //     .then(savedData => {
+                //         console.log(`Data Saved : ${savedData}`)
+                //     })
+                //     .catch(error => {
+                //         console.log('error', error)
+                //     })
+
+                //res.send({ message: obj });
+                // res.status(200).json({ obj });
+                 return (obj)
             })
 
         .catch(error => {
-            console.log(error);
-            res.status(500).json({ message: 'Error getting weather data' });
-        });
+            //console.log(error);
+            // res.status(500).json({ message: 'Error getting weather data', error });
+            // res.status(500).json({ message: 'Error getting weather data' });
+        }
+        );
 
-    return (obj)
+     return (obj)
 }
 
 

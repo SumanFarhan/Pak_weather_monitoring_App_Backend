@@ -54,7 +54,7 @@ io.on('connection', (socket) => {
     .then((response) => {
         // Emit the API response to the client
         socket.emit('weather-data', response.data);
-        console.log(response.data)
+        // console.log(response.data)
     })
     .catch((error) => {
         console.log(error);
